@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import './App.css';
 
 import Sidebar from './Sidebar/Sidebar';
-import NoteContainer from './NoteContainer/NoteContainer';
+import Button from './Button/Button';
+import Note from './Note/Note';
+import NoteEdit from './NoteEdit/NoteEdit';
 
 class App extends Component {
   state = {
@@ -26,21 +28,44 @@ class App extends Component {
         content: ['Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',  'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.', 'Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?']
       },
       {
-        id: 3,
+        id: 2,
         headline: 'My Special Note',
-        createdDate: '2/19/19',
+        createdDate: '2/19/2019',
         createdTime: '9:41AM',
-        updatedDate: '7/26/19',
+        updatedDate: '7/26/2019',
         updatedTime: '1:37PM',
         content: ['You might remember the Dell computer commercials in which a youth reports this exciting news to his friends that they are about to get their new computer by telling them, “Dude, you’re getting a Dell!” It was a cute series but it reflects the excitement young people get about anything new, particularly if it’s a new machine.', 'So when its time to finally get your children that very first telescope, you want to make sure it’s just the right thing. There are a number of reasons you should put some serious thought into just what this beginner telescope should look like. Perhaps this will be your children’s first experience with a real telescope. They may have a healthy and thriving love of astronomy from your family trips to the country to watch a meteor shower or just to gaze at the stars. And you may have piqued their interest showing them how to enhance the experience with binoculars or even letting them play with your telescope.']
       }
     ],
     activeNoteId: null,
     activeNote: {},
+    noteIsEditable: false,
   }
 
   createNoteHandler = () => {
-    console.log('Create note clicked')
+    if (Object.keys(this.state.activeNote).length > 0) {
+      this.editNoteHandler(this.state.activeNote.id);
+    }
+
+    this.setState({ activeNote: {} });
+
+
+    const d = new Date();
+    const isEvening = d.getHours() > 12;
+    const newNote = {
+      id: this.state.notes[this.state.notes.length - 1].id + 1,
+      headline: '',
+      createdDate: `${d.getMonth()}/${d.getDate()}/${d.getFullYear()}`,
+      createdTime: `${isEvening ? d.getHours() - 12 : d.getHours()}:${d.getMinutes()}${isEvening ? 'PM' : 'AM'}`,
+      content: [],
+    }
+    const notes = [...this.state.notes];
+    notes.push(newNote);
+
+    this.setState({ notes: notes });
+    this.setState({ activeNoteId: newNote.id });
+    this.setState({ activeNote: newNote });
+    this.setState({ noteIsEditable: true});
   }
 
   selectNoteHandler = (noteId) => {
@@ -53,6 +78,7 @@ class App extends Component {
 
     this.setState({ activeNote: note })
     this.setState({ activeNoteId: noteId });
+    this.setState({ noteIsEditable: false });
   }
 
   deleteNoteHandler = (noteId) => {
@@ -69,19 +95,50 @@ class App extends Component {
     });
   };
 
-  editNoteHandler = (note) => {
-    const noteIndex = this.state.notes.findIndex(n => {
-      return n.id === note.id
+  editNoteHandler = (noteId) => {
+    if (Object.values(this.state.activeNote).length === 0) return false;
+    const activeNoteIndex = this.state.notes.findIndex(n => {
+      return n.id === noteId
     });
 
-    console.log('editNoteHandler', note);
+    const noteIsEditable = this.state.noteIsEditable;
+    if (noteIsEditable) {
+      // update state note to match active note
+      const activeNote = {...this.state.activeNote}
+      
 
-    // const notes = [...this.state.notes];
-    // notes[noteIndex] = note;
-    // this.setState({notes: notes})
+      const notes = [...this.state.notes]
+
+      notes[activeNoteIndex] = activeNote;
+      this.setState({ notes: notes });
+    }
+    return this.setState({ noteIsEditable: !noteIsEditable })
+  }
+
+  headlineChangedHandler(event) {
+    const note = {...this.state.activeNote};
+
+    note.headline = event.target.value;
+
+    this.setState({ activeNote: note });
+  }
+
+  contentChangedHandler(event) {
+    const note = {...this.state.activeNote};
+
+    note.content = [event.target.value];
+
+    this.setState({ activeNote: note });
   }
 
   render() {
+    let noteDisplay = null
+    if (!this.state.noteIsEditable) {
+      noteDisplay = <Note isEditable={this.state.noteIsEditable} headline={this.state.activeNote.headline} content={this.state.activeNote.content} />
+    } else if (Object.keys(this.state.activeNote).length > 0 && this.state.noteIsEditable) {
+      noteDisplay = <NoteEdit headline={this.state.activeNote.headline} content={this.state.activeNote.content} headlineChanged={(event) => this.headlineChangedHandler(event, this.state.activeNote.id)} bodyChanged={(event) => this.contentChangedHandler(event, this.state.activeNote.id)}/>
+    }
+
     return (
       <section className="layout">
         <Sidebar
@@ -89,10 +146,24 @@ class App extends Component {
           createNoteClick={() => this.createNoteHandler}
           activeNoteId={this.state.activeNoteId}
           selectNoteClick={(id) => this.selectNoteHandler(id)}/>
-        <NoteContainer
-          currentNote={this.state.activeNote}
-          deleteNoteClick={(id) => this.deleteNoteHandler(id)}
-          editNoteClick={(data) => this.editNoteHandler(data)} />
+        <main>
+          <header>
+          <p className="body-text no-margin muted">Last Updated: {this.state.activeNote.createdTime} {this.state.activeNote.createdDate}</p>
+          <div className="button-group">
+            <Button
+              classList='button primary header-text'
+              display='primary'
+              click={() => this.editNoteHandler(this.state.activeNote.id)}
+              value='Edit Note' />
+            <Button
+              classList='button secondary header-text'
+              display='secondary'
+              click={() => this.deleteNoteHandler(this.state.activeNote.id)}
+              value='Delete Note' />
+          </div>
+        </header>
+        { noteDisplay }
+        </main>
       </section>
     );
   }

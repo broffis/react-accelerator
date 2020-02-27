@@ -15,8 +15,8 @@ const sidebar = (props) => {
       return <NoteSidebar
         key={`note-preview-${note.id}`}
         headline={note.headline}
-        updatedDate={ note.updatedDate !== '' ? note.updatedDate : note.createdDate }
-        updatedTime={ note.updatedTime !== '' ? note.updatedTime : note.createdTime }
+        updatedDate={ note.createdDate }
+        updatedTime={ note.createdTime }
         click={() => selectNote(note.id)}
         isActiveNote={props.activeNoteId === note.id ? 'active' : null }/>
     })
