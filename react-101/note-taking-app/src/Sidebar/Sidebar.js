@@ -5,7 +5,6 @@ import NoteSidebar from '../NoteSidebar/NoteSidebar';
 
 const sidebar = (props) => {
   const selectNote = (id) => {
-    console.log('selectNote id', id);
     return props.selectNoteClick(id);
   }
 

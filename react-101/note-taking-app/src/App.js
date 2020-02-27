@@ -55,6 +55,32 @@ class App extends Component {
     this.setState({ activeNoteId: noteId });
   }
 
+  deleteNoteHandler = (noteId) => {
+    const noteIndex = this.state.notes.findIndex(note => {
+      return note.id === noteId
+    });
+
+    const notes = [...this.state.notes];
+    notes.splice(noteIndex, 1);
+    this.setState({ 
+      notes: notes,
+      activeNoteId: null,
+      activeNote: {},
+    });
+  };
+
+  editNoteHandler = (note) => {
+    const noteIndex = this.state.notes.findIndex(n => {
+      return n.id === note.id
+    });
+
+    console.log('editNoteHandler', note);
+
+    // const notes = [...this.state.notes];
+    // notes[noteIndex] = note;
+    // this.setState({notes: notes})
+  }
+
   render() {
     return (
       <section className="layout">
@@ -63,7 +89,10 @@ class App extends Component {
           createNoteClick={() => this.createNoteHandler}
           activeNoteId={this.state.activeNoteId}
           selectNoteClick={(id) => this.selectNoteHandler(id)}/>
-        <NoteContainer currentNote={this.state.activeNote} />
+        <NoteContainer
+          currentNote={this.state.activeNote}
+          deleteNoteClick={(id) => this.deleteNoteHandler(id)}
+          editNoteClick={(data) => this.editNoteHandler(data)} />
       </section>
     );
   }
