@@ -2,11 +2,9 @@ import React from 'react';
 
 import Button from '../Button/Button';
 import Note from '../Note/Note';
-import NoteEdit from '../NoteEdit/NoteEdit';
 
 const noteContainer = (props) => {
   let noteIsEditable = false;
-  let noteDisplay = <Note headline={props.currentNote.headline} content={props.currentNote.content} />;
 
   const deleteNote = (id) => {
     noteIsEditable = false;
@@ -22,16 +20,7 @@ const noteContainer = (props) => {
 
     noteIsEditable = !noteIsEditable;
 
-    console.log('noteIsEditable', noteIsEditable)
-
-    if (noteIsEditable) {
-      noteDisplay = (<NoteEdit headline={props.currentNote.headline} content={props.currentNote.content} />);
-    }
-
-    console.log('noteDisplay', noteDisplay);
-
     if (!noteIsEditable) {
-      noteDisplay = (<Note headline={props.currentNote.headline} content={props.currentNote.content} />);
       return props.editNoteClick(note);
     };
   }
@@ -54,7 +43,7 @@ const noteContainer = (props) => {
             value='Delete Note' />
         </div>
       </header>
-      { noteDisplay }
+      <Note isEditable={noteIsEditable} headline={props.currentNote.headline} content={props.currentNote.content} />
     </main>
   );
 }
