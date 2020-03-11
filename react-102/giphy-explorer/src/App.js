@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+import { Grid } from '@giphy/react-components';
+import { GiphyFetch } from '@giphy/js-fetch-api';
+
+const gf = new GiphyFetch('5BcMM5haBgjwUgDkXX2u5WelcQnQ6Z8p');
+// const fetchGifs = () => gf.trending({ offset: 25, limit: 10 });
+// const searchGifs = () => gf.search('letterkenny', { sort: 'relevant', lang: 'es', limit: 10})
+
+class App extends Component {
+
+  // const gf = new GiphyFetch('5BcMM5haBgjwUgDkXX2u5WelcQnQ6Z8p');
+  fetchGifs = () => gf.trending({ offset: 25, limit: 10 });
+  searchGifs = () => gf.search('letterkenny', { sort: 'relevant', lang: 'es', limit: 10})
+
+  render () {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <p>You'll type your input here:</p>
+          {/* <Grid width={800} columns={3} fetchGifs={fetchGifs} /> */}
+          <Grid width={800} columns={3} fetchGifs={this.searchGifs} />
+        </header>
+      </div>
+    );
+  }
 }
 
 export default App;
