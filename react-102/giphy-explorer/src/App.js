@@ -1,50 +1,58 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import './App.css';
 
 
-import { Grid } from '@giphy/react-components';
-import { GiphyFetch } from '@giphy/js-fetch-api';
+import Giphy from './components/GiphyDisplay';
+import SearchInput from './components/SearchInput';
 
-import axios from 'axios';
-
-const gf = new GiphyFetch('5BcMM5haBgjwUgDkXX2u5WelcQnQ6Z8p');
-// const gf = new GiphyFetch(process.env.REACT_APP_GIPHY_API_KEY);
-console.log('apiKey', process.env.REACT_APP_GIPHY_API_KEY);
 const apiKey = process.env.REACT_APP_GIPHY_API_KEY;
-// const fetchGifs = () => gf.trending({ offset: 25, limit: 10 });
-// const searchGifs = () => gf.search('letterkenny', { sort: 'relevant', lang: 'es', limit: 10})
 
 class App extends Component {
   state = {
-    searchParam: '',
     selectedGiphyId: null,
+    giphys: [],
+    searchValue: '',
   }
 
-  // const gf = new GiphyFetch('5BcMM5haBgjwUgDkXX2u5WelcQnQ6Z8p');
-  fetchGifs = () => gf.trending({ offset: 25, limit: 10 });
-  searchGifs = () => gf.search('letterkenny', { sort: 'relevant', lang: 'es', limit: 10})
+  inputChangedHandler = (input) => {
+    this.setState({ searchValue: input })
+  }
 
-  pullGifData = (searchQuery) => {
-    // if (!searchQuery) {
-    //   return false
-    // }
+  pullGifData = async () => {
+    if (!this.state.searchValue) {
+      const results = await axios.get(`https://api.giphy.com/v1/gifs/trending?api_key=${apiKey}&limit=10&rating=G`)
+      const { data } = results;
+      this.setState({ giphys: data.data })
+      return false;
+    }
 
-    // this.setState({searchParam: searchQuery });
-
-    axios.get(`https://api.giphy.com/v1/gifs/search?api_key=5BcMM5haBgjwUgDkXX2u5WelcQnQ6Z8p&q=letterkenny&limit=10&offset=0&rating=G&lang=en`)
-    axios.get(`https://api.giphy.com/v1/gifs/search?api_key=${apiKey}&q=letterkenny&limit=10&offset=0&rating=G&lang=en`)
-
+    axios.get(`https://api.giphy.com/v1/gifs/search?q=${this.state.searchValue}&api_key=${apiKey}&limit=10&offset=0&rating=G&lang=en`)
+      .then(response => {
+        const { data } = response;
+        this.setState({ giphys: data.data })
+      })
   }
 
   render () {
+    let gifs = this.state.giphys.map(gif => {
+        return <Giphy id={gif.id} title={gif.title} />;
+      });
     return (
       <div className="App">
         <header className="App-header">
-          <p>You'll type your input here:</p>
-          {/* <Grid width={800} columns={3} fetchGifs={fetchGifs} /> */}
-          <Grid width={800} columns={3} fetchGifs={this.searchGifs} />
+          <fieldset>
+            <legend>Gif Search</legend>
+            <SearchInput 
+              id='searchText'
+              label='Search'
+              type='text'
+              defaultValue={this.state.searchValue}
+              changed={this.inputChangedHandler}/>
+          </fieldset>
           <button onClick={this.pullGifData}>Click me for gif data</button>
         </header>
+        { gifs }
       </div>
     );
   }
