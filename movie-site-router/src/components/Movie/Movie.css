@@ -1,0 +1,36 @@
+.movie-description {
+  text-indent: 25px;
+  color: #111;
+}
+
+.movie-info {
+  margin: 0;
+  padding: 0 10px;
+  color: #111;
+}
+
+.movie-poster {
+  height: auto;
+  width: calc(50% - 20px);
+  margin: 10px 5px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 3px #aaa;
+  border-radius: 0 0 5px 5px;
+  box-sizing: border-box;
+  color: #111;
+}
+
+.movie-title {
+  margin: 0;
+  padding: 5px 10px;
+  color: #111;
+  background-color: rgba(56, 204, 204, 0.5);
+}
+
+
+@media (min-width: 768px) {
+  .movie-poster {
+    width: calc(33% - 20px);
+  }
+}
