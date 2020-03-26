@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Route } from 'react-router-dom';
 
 import axios from '../../../axios-movies';
 
@@ -15,7 +16,7 @@ class Movies extends Component {
   };
 
   componentDidMount() {
-    axios.get(`https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}&language=en-US&page=1&region=us`)
+    axios.get(`/now_playing?api_key=${apiKey}&language=en-US&page=1&region=us`)
       .then(resp => {
         const movies = resp.data.results
         .filter(movie => movie.release_date > '2020-03-01')
@@ -30,7 +31,6 @@ class Movies extends Component {
   }
 
   movieSelectedHandler = (id) => {
-    console.log('movie id', id);
     this.props.history.push({pathname: '/movies/' + id});
   }
 
@@ -47,9 +47,10 @@ class Movies extends Component {
       })
     }
     return (
-      <div className="movies-container">
+      <section className="movies-container">
+        <Route path={this.props.match.url + '/:id'} exact component={FullMovie} />
         { movies }
-      </div>
+      </section>
     );
   }
 }

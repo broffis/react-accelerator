@@ -16,7 +16,7 @@ class Blog extends Component {
               <li>
                 <NavLink
                   className="nav-item"
-                  to="/">Home</NavLink>
+                  to="/movies">Home</NavLink>
               </li>
             </ul>
           </nav>
