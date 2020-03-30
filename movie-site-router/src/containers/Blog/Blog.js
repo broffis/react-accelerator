@@ -22,6 +22,7 @@ class Blog extends Component {
           </nav>
         </header>
         <Switch>
+          <Route path="/MovieNotFound" render={() => <h1>Movie not found</h1>} />
           <Route path="/movies" component={Movies} />
           <Route path="/" exact component={Movies} />
           <Route render={() => <h1>Page not found</h1>} />

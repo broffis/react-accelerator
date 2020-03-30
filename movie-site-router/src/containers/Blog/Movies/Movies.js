@@ -3,6 +3,8 @@ import { Route } from 'react-router-dom';
 
 import axios from '../../../axios-movies';
 
+import withErrorHandler from '../../../hoc/withErrorHandler';
+
 import Movie from '../../../components/Movie/Movie';
 import FullMovie from '../FullMovie/FullMovie';
 
@@ -55,4 +57,4 @@ class Movies extends Component {
   }
 }
 
-export default Movies;
+export default withErrorHandler(Movies, axios);
