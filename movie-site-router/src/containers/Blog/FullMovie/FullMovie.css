@@ -1,0 +1,51 @@
+.full-movie {
+  width: 100%;
+  min-height: 100vh;
+  border-bottom: 3px solid #111;
+}
+
+.full-movie-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.full-movie-description {
+  font-size: 1.25rem;
+}
+
+.full-movie-poster {
+  width: 100%;
+}
+
+.full-movie-release-date {
+  font-size: 1.5rem;
+}
+
+.full-movie-text {
+  margin: 0 20px;
+}
+
+.full-movie-title {
+  font-size: 2rem;
+  margin: 5px 0;
+}
+
+@media screen and (min-width: 768px) {
+  .full-movie-content {
+    flex-direction: row;
+  }
+
+  .full-movie-poster {
+    width: 350px;
+  }
+
+  .full-movie-release-date {
+    margin-left: 20px;
+  }
+
+  .full-movie-title {
+    font-size: 2.75rem;
+  }
+
+}

@@ -1,0 +1,23 @@
+.blog {
+  background-color: #ddd;
+}
+
+.blog nav ul {
+  margin: 0;
+  padding: 10px;
+  list-style: none;
+}
+
+.nav-item {
+  text-decoration: none;
+  color: #111;
+}
+
+.nav-item:active,
+.nav-item:hover {
+  color: #ff851b;
+}
+
+.font-bold {
+  font-weight: bold;
+}
